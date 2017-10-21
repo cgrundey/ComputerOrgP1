@@ -22,19 +22,19 @@ hexInstructions = list()
 
 # Parsing labels
 with open('test cases/test_case3.s', 'r') as assemblyFile:
-    lineCount = 0
-    num = 0
+    lineCount = 1
+    n = 0
     for line in assemblyFile:
         if ':' in line:
-            labels.update({line[:line.find(':')]: lineCount - num})
-            num += 1
+            labels.update({line[:line.find(':')]: lineCount - n})
+            n += 1
         lineCount += 1
 
 # Parsing instructions
 with open('test cases/test_case3.s', 'r') as assemblyFile:
     for line in assemblyFile:
-        instructionCount += 1
         if ':' not in line:
+            instructionCount += 1
             line = line[1:]
             instruction = line[:line.find("\t") + 1].rstrip("\t")
             line = line[line.find("\t") + 1:]
@@ -72,7 +72,7 @@ with open('test cases/test_case3.s', 'r') as assemblyFile:
                         if imm in labels:
                             rs = regs[operands[0]]
                             rt = regs[operands[1]]
-                            imm = str(labels[imm] - instructionCount + 1)
+                            imm = str(labels[imm] - instructionCount - 1)
                         else:
                             sys.exit('Label does not exist: ' + imm)
 
@@ -88,4 +88,3 @@ with open('test cases/test_case3.s', 'r') as assemblyFile:
 f = open("output.o", "w")
 for i in hexInstructions:
     f.write(str(i) + '\n')
-    # f.write(bytes((i,)))

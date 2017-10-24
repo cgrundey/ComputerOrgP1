@@ -1,15 +1,23 @@
 # Python Assemebler
+# Colin Grundey
+# October 2017
 
 import sys
 import os
+import re
 
-if len(sys.argv) != 3:
-    sys.exit('Wrong number of arguments')
-if not os.path.isfile(sys.argv[1]):
-    sys.exit('Input file does not exist')
+if len(sys.argv) != 2:
+    print(sys.argv)
+    sys.exit('Wrong number of arguments: ' + str(len(sys.argv) - 1) + '\nUsage: <input assembly file> <output object file>\n')
 
 inFileName = sys.argv[1]
-outFileName = sys.argv[2]
+
+if not os.path.isfile(inFileName) or (inFileName[inFileName.find('.'):] != '.s' and inFileName[inFileName.find('.'):] != '.asm'):
+    print(inFileName)
+    sys.exit('Input file does not exist: ' + inFileName)
+
+outFileName = os.path.basename(inFileName)
+outFileName = outFileName[:outFileName.find('.')] + '.obj'
 
 # Keep track of instruction to branch to later
 instructionCount = 0
@@ -30,9 +38,8 @@ labels = dict()
 # Final instructions recorded in hex are stored in a list
 hexInstructions = list()
 
-# TODO: use command line arguments
 # Parsing labels
-with open('test cases/test_case3.s', 'r') as assemblyFile:
+with open(inFileName, 'r') as assemblyFile:
     lineCount = 1
     n = 0
     for line in assemblyFile:
@@ -43,9 +50,8 @@ with open('test cases/test_case3.s', 'r') as assemblyFile:
 
 linenum = 0  # for error output
 
-# TODO: use command line arguments
 # Parsing instructions
-with open('test cases/test_case3.s', 'r') as assemblyFile:
+with open(inFileName, 'r') as assemblyFile:
     for line in assemblyFile:
         linenum += 1
         if ':' not in line:
@@ -121,11 +127,9 @@ with open('test cases/test_case3.s', 'r') as assemblyFile:
             else:
                 sys.exit('Instruction not supported at line [' + linenum + ']')
 
-# TODO: use command line arguments
-# TODO: Write file out as hexadecimial / binary
 # Output hex instructions to object file
-with open("output.obj", "wb") as f:
+with open(outFileName, 'w') as f:
     for i in hexInstructions:
-        # f.write(str(i) + '\n') # writes as string to object file
-        f.write(bytes(i))
-        f.write(b'\n')
+        f.write(str(i) + '\n')  # writes as string to object file
+        # f.write(bytes(i))
+        # f.write(b'\n')

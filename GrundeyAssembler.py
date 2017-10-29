@@ -131,5 +131,3 @@ with open(inFileName, 'r') as assemblyFile:
 with open(outFileName, 'w') as f:
     for i in hexInstructions:
         f.write(str(i) + '\n')  # writes as string to object file
-        # f.write(bytes(i))
-        # f.write(b'\n')
